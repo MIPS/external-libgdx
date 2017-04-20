@@ -5228,6 +5228,10 @@ static stbi_uc *stbi__psd_load(stbi__context *s, int *x, int *y, int *comp, int 
                } else if (len < 128) {
                   // Copy next len+1 bytes literally.
                   len++;
+                  if (len >= pixelCount - count) {
+                     STBI_FREE(out);
+                     return stbi__errpuc("corruptfile", "Corrupt PSD file");
+                  }
                   count += len;
                   while (len) {
                      *p = stbi__get8(s);
@@ -5241,6 +5245,10 @@ static stbi_uc *stbi__psd_load(stbi__context *s, int *x, int *y, int *comp, int 
                   len ^= 0x0FF;
                   len += 2;
                   val = stbi__get8(s);
+                  if (len >= pixelCount - count) {
+                     STBI_FREE(out);
+                     return stbi__errpuc("corruptfile", "Corrupt PSD file");
+                  }
                   count += len;
                   while (len) {
                      *p = val;
